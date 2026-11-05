@@ -52,6 +52,11 @@ mvn test          # compile and run the tests
 mvn package       # build target/student-records-1.0-SNAPSHOT.jar (main class: app.Main)
 ```
 
+CI ([.github/workflows/maven.yml](.github/workflows/maven.yml)) runs
+`mvn --batch-mode clean test-compile` on every push and on pull requests to `main`:
+it must stay green, so make sure the code compiles (main **and** test sources)
+before pushing.
+
 ## Conventions
 
 - Keep one concern per commit, with a conventional prefix (`feat:`, `fix:`, `docs:`,
