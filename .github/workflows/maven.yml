@@ -31,5 +31,6 @@ jobs:
           cache: maven
 
       # Compiles main and test sources; does not run tests.
+      # Uses the Maven Wrapper so CI runs the same Maven version as everyone locally.
       - name: Compile with Maven
-        run: mvn --batch-mode clean test-compile
+        run: ./mvnw --batch-mode --no-transfer-progress clean test-compile
