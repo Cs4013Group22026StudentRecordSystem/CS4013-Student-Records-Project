@@ -1,0 +1,21 @@
+# Normalise line endings so Windows and macOS/Linux contributors produce the same diff.
+* text=auto eol=lf
+
+# Maven wrapper: shell scripts must stay LF and keep their executable bit.
+mvnw text eol=lf
+mvnw.cmd text eol=crlf
+
+# Gradle-style and Windows batch scripts (if added later)
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary assets: never diff or convert.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.jar binary
+*.zip binary
+*.class binary
