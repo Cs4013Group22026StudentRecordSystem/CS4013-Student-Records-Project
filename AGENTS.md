@@ -45,17 +45,18 @@ inventing a regulation.
 
 ## Build and test
 
-Java 17 + Maven.
+Java 17 + the Maven Wrapper. Use `./mvnw` (`mvnw.cmd` on Windows) so everyone builds
+with the same pinned Maven version (3.10.0) — a local `mvn` may differ.
 
 ```bash
-mvn test          # compile and run the tests
-mvn package       # build target/student-records-1.0-SNAPSHOT.jar (main class: app.Main)
+./mvnw test       # compile and run the tests
+./mvnw package    # build target/student-records-1.0-SNAPSHOT.jar (main class: app.Main)
 ```
 
 CI ([.github/workflows/maven.yml](.github/workflows/maven.yml)) runs
-`mvn --batch-mode clean test-compile` on every push and on pull requests to `main`:
-it must stay green, so make sure the code compiles (main **and** test sources)
-before pushing.
+`./mvnw --batch-mode --no-transfer-progress clean test-compile` on every push and on
+pull requests to `main`: it must stay green, so make sure the code compiles (main
+**and** test sources) before pushing.
 
 ## Conventions
 
