@@ -3,15 +3,15 @@
 ## Project Structure
 
 All Java source code lives in the Maven source tree (`src/main/java`). There is no
-separate `Code/` directory.
+separate `Code/` directory, and all CSV data (including mock/test data) lives in
+`data/` — there is no separate `CSV/` directory.
 
 ```text
 .
 ├── pom.xml
 ├── README.md
 ├── CRC/                        # CRC cards (documentation deliverable)
-├── CSV/                        # CSV test data (data deliverable)
-├── data/                       # Application data files
+├── data/                       # CSV data files, including mock/test data
 └── src
 	├── main
 	│   ├── java
