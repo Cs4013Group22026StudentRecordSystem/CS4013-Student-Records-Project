@@ -8,7 +8,7 @@ separate `Code/` directory, and all CSV data (including mock/test data) lives in
 
 ```text
 .
-├── pom.xml
+├── pom.xml                     # Configuration file of a Maven project
 ├── README.md
 ├── CRC/                        # CRC cards (documentation deliverable)
 ├── data/                       # CSV data files, including mock/test data
