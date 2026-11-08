@@ -5,13 +5,14 @@ Context and conventions for anyone (human or AI agent) working in this repositor
 ## Shared agent context: `.github/agents/`
 
 [.github/agents/](.github/agents) is a **shared, team-visible** directory: it holds the authoritative
-course materials for this project, not code. All four team members and their
-agents read the same files from here.
+course materials and shared design references for this project, not application code.
+All four team members and their agents read the same files from here.
 
 | File | Purpose |
 | --- | --- |
 | `CS4013 Software Development ProjectAY202627.md` / `.pdf` | The assignment specification: required features, deliverables, grading rules, interview rules. |
 | `Handbook of Academic Regulations and Procedures 2026-27 Chapter 2-3.md` / `.pdf` | UL's actual marking/progression regulations (Chapter 2 "Marks and Standards", Chapter 3 "Progression"). This is the source of truth for QCA, progression and award rules. |
+| `UML-diagram.md` | Shared Mermaid class diagram describing the planned model, services, repositories, and their relationships. |
 
 Each document exists as both `.md` and `.pdf`. **They are the same content** — the
 `.md` is the extracted text and is much cheaper to read; open the `.pdf` only when
@@ -34,6 +35,15 @@ Typical things to resolve there before writing code:
 
 If the documents genuinely do not answer the question, ask the team rather than
 inventing a regulation.
+
+### UML design reference
+
+Use [`.github/agents/UML-diagram.md`](.github/agents/UML-diagram.md) as the shared
+class-design reference. It describes the intended architecture and may include
+planned or placeholder classes, so it is not proof that a feature is implemented.
+Update it when the agreed design changes, and keep it consistent with the code
+when implementation is completed. Store application code under `src/`, not in
+`.github/agents/`.
 
 ## Repository layout
 
