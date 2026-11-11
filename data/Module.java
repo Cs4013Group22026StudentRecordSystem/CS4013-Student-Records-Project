@@ -2,6 +2,7 @@ public class Module{
     private double[] weight;
     private String ModuleName;
     private int numberOfTests;
+     private QCA result;
     
     public Module(String name, int numberOfTests){
       this.ModuleName = name;
