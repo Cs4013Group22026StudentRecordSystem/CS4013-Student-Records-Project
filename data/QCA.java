@@ -80,4 +80,33 @@ public class QCA{
         } else
         return "A1";
     }
+
+    /**
+     * Assignes a QVP value to a module depending on the grade recived
+     * @return QVP: QVP value of a particular moduel
+     */
+    double getQCA(){
+        String grade = getGrade();
+        double QVP = 0;
+        if(grade == "A1"){
+            return QVP = 4.0;
+        } else if (grade == "A2"){
+            return QVP = 3.60;
+        } else if (grade == "B1"){
+            return QVP = 3.20;
+        } else if (grade == "B2"){
+            return QVP = 3.00;
+        } else if (grade == "B3"){
+            return QVP = 2.80;
+        } else if (grade == "C1"){
+            return QVP = 2.60;
+        }else if (grade == "C2"){
+             return QVP = 2.40;
+        } else if (grade == "C3"){
+            return QVP = 2.00;
+        } else if (grade == "D1"){
+            return QVP = 1.60;
+        }
+        return QVP = 0.00;
+    }
 }
