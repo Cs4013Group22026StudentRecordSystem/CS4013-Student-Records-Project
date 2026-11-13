@@ -1,4 +1,5 @@
 package model;
+//Add the duration?
 
 /**
  * Represents a programme of study.
