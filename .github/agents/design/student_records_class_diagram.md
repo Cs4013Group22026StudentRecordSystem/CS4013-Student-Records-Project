@@ -1,151 +1,220 @@
-# Student Records System - UML Class Diagram
-
 ```mermaid
 classDiagram
     direction TB
 
-    class StudentRecordsMenu {
-        -system: StudentRecordsSystem
-        +displayMenu() void
-        +run() void
-        +handleChoice(int) void
+    %% =============== APP ===============
+    namespace app {
+        class Main {
+            +main(String[]) void
+        }
     }
 
-    class StudentRecordsSystem {
-        -students: List~Student~
-        -programmes: List~Programme~
-        -modules: List~Module~
-        -fileManager: FileStorage
-        +addStudent(Student) void
-        +addProgramme(Programme) void
-        +addModule(Module) void
-        +registerStudent(String, String) void
-        +recordResult(String, String, String, int, int) void
-        +getStudent(String) Student
-        +generateTranscript(String) Transcript
-        +calculateSemesterQCA(String, int, int) double
-        +calculateOverallQCA(String) double
-        +checkProgression(String) String
+    %% =============== PRESENTATION ===============
+    namespace presentation {
+        class Presentable {
+            <<interface>>
+            +run() void
+        }
+        class CLIUserInterface
+        class Role {
+            <<enumeration>>
+            STUDENT
+            FACULTY
+            DEPARTMENT
+        }
     }
 
-    class Faculty {
-        -staffId: String
-        -name: String
-        -department: String
-        +submitResult(String, String, String, int, int) void
-        +getModules() List~Module~
+    %% =============== MODEL ===============
+    namespace model {
+        class Student {
+            -studentId: String
+            -name: String
+            -email: String
+            -programme: Programme
+            -currentYear: int
+        }
+        class Faculty {
+            -staffId: String
+            -name: String
+            -department: String
+        }
+        class Programme {
+            -programmeCode: String
+            -name: String
+            -durationYears: int
+            -level: ProgrammeLevel
+        }
+        class Module {
+            -moduleCode: String
+            -title: String
+            -credits: int
+            -faculty: Faculty
+        }
+        class ProgrammeModule {
+            -programme: Programme
+            -module: Module
+            -yearOfStudy: int
+            -semester: Semester
+            -mandatory: boolean
+        }
+        class Result {
+            -student: Student
+            -module: Module
+            -grade: Grade
+            -period: AcademicPeriod
+            -attempt: int
+        }
+        class AcademicPeriod {
+            -academicYear: String
+            -semester: Semester
+        }
+        class ExamBoard {
+            -programme: Programme
+            -period: AcademicPeriod
+            -decisions: List~ProgressionDecision~
+            +addDecision(ProgressionDecision) void
+            +getDecisions() List~ProgressionDecision~
+        }
+        class ProgressionDecision {
+            -student: Student
+            -qca: double
+            -decision: Decision
+            -reason: String
+        }
+        class Transcript {
+            -student: Student
+            -results: List~Result~
+            -semesterQCA: double
+            -overallQCA: double
+        }
+        class Semester {
+            <<enumeration>>
+            AUTUMN
+            SPRING
+        }
+        class ProgrammeLevel {
+            <<enumeration>>
+            UNDERGRADUATE
+            POSTGRADUATE_TAUGHT
+        }
+        class Decision {
+            <<enumeration>>
+            PROGRESS
+            COMPENSATED_PASS
+            REPEAT_MODULE
+            REPEAT_SEMESTER
+            REPEAT_YEAR
+        }
+        class Grade {
+            <<enumeration>>
+            A1
+            A2
+            B1
+            B2
+            B3
+            C1
+            C2
+            C3
+            D1
+            F
+            NG
+            P
+            N
+            -double qpv
+            +getQpv() double
+        }
     }
 
-    class Student {
-        -studentId: String
-        -name: String
-        -email: String
-        -programme: Programme
-        -results: List~Result~
-        +addResult(Result) void
-        +getResults() List~Result~
-        +getProgramme() Programme
-        +getOverallQCA() double
+    %% =============== SERVICE ===============
+    namespace service {
+        class StudentService {
+            +addStudent(Student) void
+            +registerOnProgramme(String, String) void
+            +findStudent(String) Student
+            +getStudentsByProgramme(String) List~Student~
+        }
+        class ProgrammeService {
+            +addProgramme(Programme) void
+            +addModule(Module) void
+            +addModuleToProgramme(String, String, int, Semester) void
+        }
+        class ResultService {
+            +recordResult(String, String, Grade, AcademicPeriod) void
+            +getResults(String) List~Result~
+        }
+        class QCACalculator {
+            +calculateSemesterQCA(List~Result~) double
+            +calculateOverallQCA(List~Result~) double
+        }
+        class TranscriptService {
+            +generateTranscript(String) Transcript
+        }
+        class ProgressionService {
+            +decide(Student, AcademicPeriod) ProgressionDecision
+        }
+        class ExamBoardService {
+            +holdBoard(String, AcademicPeriod) ExamBoard
+            +confirmBoard(ExamBoard) void
+        }
+        class ProgressionRule {
+            <<interface>>
+            +decide(Student, AcademicPeriod, List~Result~, double) ProgressionDecision
+        }
+        class UndergraduateProgressionRule
+        class PostgraduateProgressionRule
     }
 
-    class Programme {
-        <<abstract>>
-        #programmeCode: String
-        #name: String
-        #durationYears: int
-        #level: String
-        +getProgrammeCode() String
-        +getName() String
-        +getModules() List~Module~
-        +addModule(Module) void
-        +canProgress(double) boolean
-    }
+    %% ---------- app ----------
+    Main ..> CLIUserInterface : creates and wires everything
 
-    class UndergraduateProgramme {
-        +canProgress(double) boolean
-    }
+    %% ---------- presentation ----------
+    Presentable <|.. CLIUserInterface
+    CLIUserInterface --> Role
+    CLIUserInterface --> StudentService
+    CLIUserInterface --> ProgrammeService
+    CLIUserInterface --> ResultService
+    CLIUserInterface --> TranscriptService
+    CLIUserInterface --> ExamBoardService
 
-    class PostgraduateProgramme {
-        +canProgress(double) boolean
-    }
+    %% ---------- model ----------
+    Student "0..*" --> "0..1" Programme : registered on
+    Programme --> ProgrammeLevel
+    Module "0..*" --> "1" Faculty : responsible
+    ProgrammeModule "0..*" --> "1" Programme
+    ProgrammeModule "0..*" --> "1" Module
+    ProgrammeModule --> Semester
+    Result "0..*" --> "1" Student
+    Result "0..*" --> "1" Module
+    Result --> Grade
+    Result --> AcademicPeriod
+    AcademicPeriod --> Semester
+    ExamBoard "1" *-- "0..*" ProgressionDecision
+    ExamBoard "0..*" --> "1" Programme
+    ExamBoard --> AcademicPeriod
+    ProgressionDecision "0..*" --> "1" Student
+    ProgressionDecision --> Decision
+    Transcript --> Student
+    Transcript --> Result
 
-    class Module {
-        -moduleCode: String
-        -title: String
-        -credits: int
-        -semester: int
-        +getModuleCode() String
-        +getCredits() int
-        +getSemester() int
-    }
+    %% ---------- service ----------
+    ProgressionRule <|.. UndergraduateProgressionRule
+    ProgressionRule <|.. PostgraduateProgressionRule
+    TranscriptService --> ResultService
+    TranscriptService --> QCACalculator
+    ProgressionService --> ResultService
+    ProgressionService --> QCACalculator
+    ProgressionService --> ProgressionRule : picks by programme level
+    ExamBoardService --> ProgressionService
+    ExamBoardService --> StudentService
 
-    class Result {
-        -grade: String
-        -gradePoints: double
-        -academicYear: int
-        -semester: int
-        +getGrade() String
-        +getGradePoints() double
-        +getAcademicYear() int
-        +getSemester() int
-    }
-
-    class Transcript {
-        -student: Student
-        -results: List~Result~
-        -semesterQCA: double
-        -overallQCA: double
-        +generate() String
-        +display() void
-    }
-
-    class QCACalculator {
-        +calculateSemesterQCA(List~Result~) double
-        +calculateOverallQCA(List~Result~) double
-    }
-
-    class ProgressionChecker {
-        +checkProgression(Student) String
-        +applyRepeatRules(Student) void
-        +applyCompensationRules(Student) void
-    }
-
-    %% Menu and system
-    StudentRecordsMenu --> StudentRecordsSystem : uses
-
-    %% Composition (system owns its collections)
-    StudentRecordsSystem "1" *-- "0..*" Student
-    StudentRecordsSystem "1" *-- "0..*" Programme
-    StudentRecordsSystem "1" *-- "0..*" Module
-
-    %% Associations
-    Faculty "1" --> "0..*" Programme : teaches
-    Student "0..*" --> "1" Programme : registered on
-    Programme "1..*" --> "0..*" Module : offers
-    Module "1" --> "0..*" Result : has results
-    Student "1" --> "0..*" Result : has
-
-    %% Inheritance
-    Programme <|-- UndergraduateProgramme
-    Programme <|-- PostgraduateProgramme
-
-    %% Dependencies
-    StudentRecordsSystem ..> Transcript
-    StudentRecordsSystem ..> QCACalculator
-    StudentRecordsSystem ..> ProgressionChecker
+    %% ---------- service uses model ----------
+    StudentService ..> Student
+    ProgrammeService ..> Programme
+    ProgrammeService ..> Module
+    ProgrammeService ..> ProgrammeModule
+    ResultService ..> Result
+    TranscriptService ..> Transcript
+    ProgressionService ..> ProgressionDecision
+    ExamBoardService ..> ExamBoard
 ```
 
-/**
-There are few things I spotted about that diagram.
-1. Sense one module can be shared by multiple programmes, so the relation of module and programme cannot be like this. -- Done
-2. And also there are several modules are shared by postgraduate student and undergraduate student, like CS4416 DATABASE SYSTEMS. So I think this abstract class part should be adjust.
-3. And there is also a problem at relation between faculty and student, the faculty not just directly teaching student, he/she response to module, and students are enrolled in a module. -- Done
-4. And another problem confused me is the relationship between Module and Result, the Result should have fields type is Module, Student and the relationship should like:
-
-Student "1" *-- "0..*" Result
-Module  "1" *-- "0..*" Result
-Result --> Student
-Result --> Module
-*/
-
-Add `ExamBoard` class that contains list of `ProgressionDecision` objects (student, period, QCA, decision, reason).
