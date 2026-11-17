@@ -26,16 +26,17 @@ classDiagram
 
     %% =============== MODEL ===============
     namespace model {
-        class Student {
-            -studentId: String
+        class Person {
+            <<abstract>>
+            -personId: String
             -name: String
             -email: String
+        }
+        class Student {
             -programme: Programme
             -currentYear: int
         }
         class Faculty {
-            -staffId: String
-            -name: String
             -department: String
         }
         class Programme {
@@ -177,6 +178,8 @@ classDiagram
     CLIUserInterface --> ExamBoardService
 
     %% ---------- model ----------
+    Person <|-- Student
+    Person <|-- Faculty
     Student "0..*" --> "0..1" Programme : registered on
     Programme --> ProgrammeLevel
     Module "0..*" --> "1" Faculty : responsible
@@ -217,4 +220,3 @@ classDiagram
     ProgressionService ..> ProgressionDecision
     ExamBoardService ..> ExamBoard
 ```
-
