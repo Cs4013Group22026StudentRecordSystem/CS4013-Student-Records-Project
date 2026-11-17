@@ -147,3 +147,5 @@ Module  "1" *-- "0..*" Result
 Result --> Student
 Result --> Module
 */
+
+Add `ExamBoard` class that contains list of `ProgressionDecision` objects (student, period, QCA, decision, reason).
