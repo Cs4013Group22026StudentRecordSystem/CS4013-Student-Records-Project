@@ -4,9 +4,22 @@ The values in square brackets are placeholders. Fill them in from the Handbook a
 
 Grading
 
-Grade scale and quality point values (QPV) for A1 to NG: [copy from Handbook]
-Pass grade: [from Handbook]; deficient grade: [from Handbook]
-QCA is calculated as the sum of (QPV x module credits) divided by total credits.
+Grade scale and quality point values (QPV) for A1 to NG are taken from Table 2.1:
+  A1 4.00, A2 3.60, B1 3.20, B2 3.00, B3 2.80, C1 2.60, C2 2.40, C3 2.00,
+  D1 1.60, F 0.00, NG 0.00. P and N have no QPV (Table 2.1 shows a dash).
+Pass grade: C3, the 40% pass line (Handbook 2.5.3); D1 covers 35% to below 40%.
+Deficient grades: F, NG and N, following Handbook 2.5.4 (which also lists I, I2 and
+  M; those administrative grades are not modelled).
+QCA is calculated as the sum of (QPV x module credits) divided by the attempted
+  credits of modules that carry a QPV (Handbook 3.3.1.2). P and N are non-quality
+  hours and are excluded from both the numerator and the denominator rather than
+  counted as 0.00, which is why Grade stores its QPV as a nullable Double.
+D1 awards credits although it is a fail (Table 2.1), so credit counting uses
+  Grade.awardsCredits() while a decision on whether the module is cleared uses
+  Grade.isPass(). Handbook 2.6.1(b) needs the former, repeat decisions need the latter.
+Administrative grades EX, R, G, I, I2, M, RE, X, Y and W (Table 2.2) are not
+  implemented: they describe pending or repeat states that need appeal, recheck or
+  re-registration workflows which are out of scope for this version.
 
 Progression
 
