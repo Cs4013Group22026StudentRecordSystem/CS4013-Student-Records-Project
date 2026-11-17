@@ -33,7 +33,8 @@ Note: TERMINATE_ENROLMENT is required even though the class diagram omitted it -
 
 Compensation
 
-Core modules (Module.core = true) cannot be compensated.
+Compulsory modules cannot be compensated (see Design assumptions for where the
+  compulsory flag is stored).
 Qualifying grade (lowest failing grade that may be compensated): [from Handbook, or team assumption]
 Required year QCA for compensation: [from Handbook, or team assumption]
 If UL's Handbook has no formal compensation rule, state this and say that StandardCompensationRule is a team assumption.
@@ -46,7 +47,20 @@ Design assumptions
 
 A student has one active registration at a time.
 A module can belong to more than one programme (programme_modules.csv).
-core is stored per module, not per programme.
+Compulsory status is stored on the association (ProgrammeModule.mandatory), not on
+  the module: a module shared by several programmes can be compulsory on one and an
+  elective on another, so the flag only means something once module and programme are
+  joined. This replaces the earlier wording "core is stored per module".
+modules.csv currently carries a flat semester number (1 to 7) instead of a year and a
+  semester. Until that file is split into modules.csv and programme_modules.csv, the
+  conversion rule is: yearOfStudy = (n + 1) / 2 and odd n is AUTUMN, even n is SPRING,
+  so semester 3 becomes year 2 AUTUMN. This is a team assumption about how the sample
+  data was numbered, not a Handbook rule.
+Module.title is required by the model but modules.csv has no title column yet; the
+  title is filled in when the module data is migrated. No code reads modules.csv, so
+  nothing is broken in the meantime.
+Faculty responsibility for a module (Module.faculty) is optional because no
+  faculty.csv exists yet; Faculty.hasFaculty reports whether it has been recorded.
 academicYear is the year the academic year starts (for example 2026 for 2026/27).
 Semesters are AUTUMN and SPRING. The diagram also listed SUMMER, but no college
   calendar or module in the sample data uses a summer semester, so it is omitted
