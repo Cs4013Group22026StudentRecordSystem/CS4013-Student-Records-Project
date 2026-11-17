@@ -12,8 +12,11 @@ Progression
 
 Undergraduate rule: [QCA threshold, e.g. cumulative QCA of 2.00, with full credits awarded to date - confirm in Handbook]
 Taught postgraduate rule: [threshold from Handbook]
-Research postgraduate rule: [simplified rule, document what was left out]
-Meaning of each status (PROCEED, REPEAT_MODULES, REPEAT_YEAR, DOES_NOT_PROGRESS, PENDING): [define for your rules]
+Research postgraduate rule: not implemented - research programmes are out of scope (see Design assumptions)
+Meaning of each status (PROGRESS, COMPENSATED_PASS, REPEAT_MODULE, REPEAT_SEMESTER, REPEAT_YEAR, TERMINATE_ENROLMENT): [define for your rules]
+Note: TERMINATE_ENROLMENT is required even though the class diagram omitted it -
+  Handbook 3.3.5.2(d), 3.3.6.2(d) and 3.3.7.2(d) each list "have their enrolment
+  terminated" as an outcome, which no other Decision constant can express.
 
 Compensation
 
@@ -32,7 +35,19 @@ A student has one active registration at a time.
 A module can belong to more than one programme (programme_modules.csv).
 core is stored per module, not per programme.
 academicYear is the year the academic year starts (for example 2026 for 2026/27).
-Semesters are numbered 1 and 2.
+Semesters are AUTUMN and SPRING. The diagram also listed SUMMER, but no college
+  calendar or module in the sample data uses a summer semester, so it is omitted
+  rather than modelled as an unused constant.
+Programme duration (Programme.durationYears) is derived from the programme level
+  instead of stored in programmes.csv: 4 years for UNDERGRADUATE and 1 year for
+  POSTGRADUATE_TAUGHT. Chapters 2 and 3 of the Handbook set grading, progression
+  and award rules but say nothing about programme length, so these figures are a
+  team assumption, not a regulation. Read from Programme.defaultDuration so the
+  single place to change them is the model, and revisit if a real column is added
+  to programmes.csv.
+Research programmes are out of scope: ProgrammeLevel has no research constant and
+  programmes.csv contains none, so the research award rule (awarded without
+  classification, Handbook 2.8.1) is not implemented.
 Faculty can submit results only for modules they teach.
 Link-in modules are not implemented in this version.
 Passwords and login are not implemented; the CLI asks for the role and ID.
