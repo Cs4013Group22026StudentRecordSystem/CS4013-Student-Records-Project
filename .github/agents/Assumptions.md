@@ -41,7 +41,7 @@ If UL's Handbook has no formal compensation rule, state this and say that Standa
 
 Awards
 
-Award bands for AwardClassification: [cumulative QCA ranges from Handbook]
+Award bands for AwardClassification are the ones in Handbook 2.6.2 and 2.7.5: first class honours 3.30, second class honours grade 1 2.90, second class honours grade 2 2.50, third class honours 2.00.
 
 Design assumptions
 
@@ -71,9 +71,15 @@ Module.title is required by the model but modules.csv has no title column yet; t
 Faculty responsibility for a module (Module.faculty) is optional because no
   faculty.csv exists yet; Faculty.hasFaculty reports whether it has been recorded.
 academicYear is the year the academic year starts (for example 2026 for 2026/27).
-Semesters are AUTUMN and SPRING. The diagram also listed SUMMER, but no college
-  calendar or module in the sample data uses a summer semester, so it is omitted
-  rather than modelled as an unused constant.
+The semesters used by the rules are AUTUMN and SPRING. Semester also declares SUMMER so
+  the enum matches the class diagram, but SUMMER is a placeholder that nothing
+  implements: no progression, repeat or QCA rule treats a summer semester differently
+  from the other two. It is kept rather than deleted because two taught masters
+  programmes (LK274 and LK296) prescribe a module in semester 3 while lasting only one
+  year, which the two-semester year mapping above cannot express, so a third semester
+  will have to be mapped when modules.csv is split. Handbook 3.3.5 and 3.3.6 define
+  progression after the Autumn and Spring semesters only, so no regulatory rule is
+  missing while SUMMER is unimplemented.
 Programme duration (Programme.durationYears) is an assumption, not a regulation:
   UNDERGRADUATE is assumed to be 4 years and POSTGRADUATE_TAUGHT 1 year. Chapters 2
   and 3 of the Handbook set grading, progression and award rules but say nothing about
