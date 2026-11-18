@@ -78,3 +78,16 @@ Research programmes are out of scope: ProgrammeLevel has no research constant an
 Faculty can submit results only for modules they teach.
 Link-in modules are not implemented in this version.
 Passwords and login are not implemented; the CLI asks for the role and ID.
+
+Assign core responsibilities to **Student**, **Faculty**, and **Department**
+| Core operation | Suggested role | Reason |
+|---|---|---|
+| Add student(s) | **Department** | Maintains student records |
+| Add programme | **Department** | Manages programme information |
+| Add module | **Department** | Maintains the module catalogue |
+| Register student on a programme | **Department** | Manages programme enrolment |
+| Record module results | **Faculty** | Faculty submit results for their modules |
+| Calculate semester QCA | **Department** | Department can oversee semester QCA |
+| Calculate overall QCA | **Department** | A programme-level or cumulative academic calculation |
+| Generate transcript | **Student** (own transcript); **Faculty/Department** (authorized lookup) | Matches the brief’s transcript access requirements |
+| Identify progression status | **Department** | A progression decision is typically made at programme level |
