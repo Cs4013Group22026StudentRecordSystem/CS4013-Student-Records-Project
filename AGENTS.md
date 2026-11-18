@@ -8,6 +8,10 @@ Context and conventions for anyone (human or AI agent) working in this repositor
 course materials and shared design references for this project, not application code.
 All four team members and their agents read the same files from here.
 
+the new design is changed to `.github/agents/design` after align and discussion, some code need to do some refactor.
+
+the folder `.github/agents/deprecated-design` just left for reference when we refactor the code.
+
 | File | Purpose |
 | --- | --- |
 | `CS4013 Software Development ProjectAY202627.md` / `.pdf` | The assignment specification: required features, deliverables, grading rules, interview rules. |
