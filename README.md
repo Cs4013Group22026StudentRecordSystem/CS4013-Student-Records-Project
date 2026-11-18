@@ -46,7 +46,7 @@ sample records:
 | File | Purpose | Current data |
 | --- | --- | --- |
 | [`programmes.csv`](data/programmes.csv) | Programme code, name, and level | 5 programmes |
-| [`students.csv`](data/students.csv) | Student ID, name, and programme code | 60 students |
+| [`students.csv`](data/students.csv) | Student ID, name, programme code, and current year of study | 60 students |
 | [`modules.csv`](data/modules.csv) | Module code, credits, semester, and programme code | 20 modules |
 | [`results.csv`](data/results.csv) | Individual result attempt, linked to a student and module | 60 results; all are attempt 1 |
 
@@ -81,6 +81,7 @@ erDiagram
         string student_id PK
         string name
         string programme_code FK
+        int current_year
     }
 
     MODULES {
@@ -114,7 +115,7 @@ If any requirement is unclear, consult these documents before deciding — see
 
 ## TODO
 
-- [ ] Add an example JUnit 5 test under `src/test/java/model/` (e.g. `GradeTest`)
+- [x] Add an example JUnit 5 test under `src/test/java/model/` (e.g. `GradeTest`)
       that asserts something trivial about a `Grade`, so `mvn test` demonstrably
       executes at least one test instead of silently passing with zero tests.
 

@@ -125,6 +125,15 @@ classDiagram
             -double qpv
             +getQpv() double
         }
+        class AwardClassification {
+            <<enumeration>>
+            FIRST_CLASS_HONOURS
+            SECOND_CLASS_HONOURS_1
+            SECOND_CLASS_HONOURS_2
+            THIRD_CLASS_HONOURS
+            -double minimumQca
+            +getMinimumQca() double
+        }
     }
 
     %% =============== SERVICE ===============

@@ -58,15 +58,17 @@ public class CsvStudentRepository implements IStudentRepository {
                 }
 
                 String[] fields = CsvParser.parseLine(line);
-                if (fields.length != 3) {
+                if (fields.length != 4) {
                     throw new IOException(
-                            "Expected 3 columns in " + studentsFile + " at line " + lineNumber);
+                            "Expected 4 columns in " + studentsFile + " at line " + lineNumber);
                 }
 
                 String studentId = fields[0].trim();
                 String name = fields[1].trim();
                 String programmeCode = fields[2].trim();
-                if (studentId.isEmpty() || name.isEmpty() || programmeCode.isEmpty()) {
+                String yearField = fields[3].trim();
+                if (studentId.isEmpty() || name.isEmpty() || programmeCode.isEmpty()
+                        || yearField.isEmpty()) {
                     throw new IOException(
                             "Empty required field in " + studentsFile + " at line " + lineNumber);
                 }
@@ -78,7 +80,8 @@ public class CsvStudentRepository implements IStudentRepository {
                             + studentsFile + " at line " + lineNumber);
                 }
 
-                Student student = new Student(studentId, name, programme);
+                Student student = new Student(studentId, name, programme, parseCurrentYear(
+                        yearField, studentsFile, lineNumber));
                 // Check for duplicate student ID keys and throw an exception if found
                 if (students.putIfAbsent(studentId, student) != null) {
                     throw new IOException("Duplicate student ID '" + studentId + "' in "
@@ -88,6 +91,24 @@ public class CsvStudentRepository implements IStudentRepository {
         }
 
         return students;
+    }
+
+    /**
+     * Reads the {@code current_year} column of a student row.
+     *
+     * @param yearField the raw column value
+     * @param file file being read, used in the error message
+     * @param lineNumber line the row came from, used in the error message
+     * @return the year of study
+     * @throws IOException if the value is not a whole number
+     */
+    private int parseCurrentYear(String yearField, Path file, int lineNumber) throws IOException {
+        try {
+            return Integer.parseInt(yearField);
+        } catch (NumberFormatException exception) {
+            throw new IOException("Invalid current_year '" + yearField + "' in " + file
+                    + " at line " + lineNumber, exception);
+        }
     }
 
     /**
