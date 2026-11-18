@@ -92,6 +92,7 @@ classDiagram
             <<enumeration>>
             AUTUMN
             SPRING
+            SUMMER
         }
         class ProgrammeLevel {
             <<enumeration>>
