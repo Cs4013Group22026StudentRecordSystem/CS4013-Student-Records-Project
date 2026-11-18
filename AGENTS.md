@@ -64,14 +64,22 @@ Java 17 + the Maven Wrapper. Use `./mvnw` (`mvnw.cmd` on Windows) so everyone bu
 with the same pinned Maven version (3.10.0) — a local `mvn` may differ.
 
 ```bash
-./mvnw test       # compile and run the tests
-./mvnw package    # build target/student-records-1.0-SNAPSHOT.jar (main class: app.Main)
+./mvnw test       # compile main and test sources, then run the JUnit tests
+./mvnw verify     # the above, plus build the JAR — this is what CI runs
+./mvnw package    # produces the same JAR as verify, since verify binds no plugin
 ```
 
+The lifecycle means `test` is a subset of `verify`, which is a subset of `install`.
+`test` writes only `target/classes`, `target/test-classes` and
+`target/surefire-reports/`; `verify` additionally produces
+`target/student-records-1.0-SNAPSHOT.jar`. Neither generates the Javadoc site or
+runs any static analysis, because no plugin for those is bound in `pom.xml`.
+
 CI ([.github/workflows/maven.yml](.github/workflows/maven.yml)) runs
-`./mvnw --batch-mode --no-transfer-progress clean test-compile` on every push and on
-pull requests to `main`: it must stay green, so make sure the code compiles (main
-**and** test sources) before pushing.
+`./mvnw --batch-mode --no-transfer-progress clean verify` on every push and on
+pull requests to `main`. Because that runs the tests rather than only compiling
+them, CI fails on a failing assertion as well as on a compile error, so run
+`./mvnw verify` locally before pushing.
 
 ## Conventions
 
