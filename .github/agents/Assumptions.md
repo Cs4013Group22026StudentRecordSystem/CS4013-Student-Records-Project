@@ -56,6 +56,15 @@ modules.csv currently carries a flat semester number (1 to 7) instead of a year 
   conversion rule is: yearOfStudy = (n + 1) / 2 and odd n is AUTUMN, even n is SPRING,
   so semester 3 becomes year 2 AUTUMN. This is a team assumption about how the sample
   data was numbered, not a Handbook rule.
+students.csv carries current_year so that a student's year of study survives a save and
+  load (Student.currentYear). The column was back-filled from results.csv with the
+  mapping above: a student's year is the highest year among the modules they have
+  results for, capped at the programme duration, and taught masters students stay in
+  year 1 because their programme lasts one year. The derived sample years are 1 for
+  LM121 and both masters programmes, 2 for LM051, and 2, 3 or 4 for LM110. A student
+  with no results is in year 1. ProgrammeModule.yearOfStudy cannot replace this field:
+  it says which year a module belongs to, not which year the student has reached, and a
+  repeating student takes modules from two years at once.
 Module.title is required by the model but modules.csv has no title column yet; the
   title is filled in when the module data is migrated. No code reads modules.csv, so
   nothing is broken in the meantime.
@@ -65,13 +74,13 @@ academicYear is the year the academic year starts (for example 2026 for 2026/27)
 Semesters are AUTUMN and SPRING. The diagram also listed SUMMER, but no college
   calendar or module in the sample data uses a summer semester, so it is omitted
   rather than modelled as an unused constant.
-Programme duration (Programme.durationYears) is derived from the programme level
-  instead of stored in programmes.csv: 4 years for UNDERGRADUATE and 1 year for
-  POSTGRADUATE_TAUGHT. Chapters 2 and 3 of the Handbook set grading, progression
-  and award rules but say nothing about programme length, so these figures are a
-  team assumption, not a regulation. Read from Programme.defaultDuration so the
-  single place to change them is the model, and revisit if a real column is added
-  to programmes.csv.
+Programme duration (Programme.durationYears) is an assumption, not a regulation:
+  UNDERGRADUATE is assumed to be 4 years and POSTGRADUATE_TAUGHT 1 year. Chapters 2
+  and 3 of the Handbook set grading, progression and award rules but say nothing about
+  programme length, so these figures are a team assumption. They are not stored in
+  programmes.csv either; Programme.defaultDuration derives them from the level so the
+  single place to change them is the model, and revisit if a real column is added to
+  programmes.csv.
 Research programmes are out of scope: ProgrammeLevel has no research constant and
   programmes.csv contains none, so the research award rule (awarded without
   classification, Handbook 2.8.1) is not implemented.

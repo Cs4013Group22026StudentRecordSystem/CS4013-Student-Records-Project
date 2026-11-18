@@ -17,7 +17,21 @@ package model;
  * without a data source.
  */
 public class Student extends Person {
+    private static final int FIRST_YEAR = 1;
+
     private final Programme programme;
+    private int currentYear;
+
+    /**
+     * Creates a first-year student whose email address is not on record.
+     *
+     * @param studentId student's identifier
+     * @param name student's full name
+     * @param programme programme the student is registered on
+     */
+    public Student(String studentId, String name, Programme programme) {
+        this(studentId, name, null, programme, FIRST_YEAR);
+    }
 
     /**
      * Creates a student whose email address is not on record.
@@ -25,9 +39,10 @@ public class Student extends Person {
      * @param studentId student's identifier
      * @param name student's full name
      * @param programme programme the student is registered on
+     * @param currentYear year of study the student has reached
      */
-    public Student(String studentId, String name, Programme programme) {
-        this(studentId, name, null, programme);
+    public Student(String studentId, String name, Programme programme, int currentYear) {
+        this(studentId, name, null, programme, currentYear);
     }
 
     /**
@@ -37,10 +52,12 @@ public class Student extends Person {
      * @param name student's full name
      * @param email student's email address, or {@code null} when not on record
      * @param programme programme the student is registered on
+     * @param currentYear year of study the student has reached
      */
-    public Student(String studentId, String name, String email, Programme programme) {
+    public Student(String studentId, String name, String email, Programme programme, int currentYear) {
         super(studentId, name, email);
         this.programme = programme;
+        this.currentYear = requireValidYear(currentYear);
     }
 
     /**
@@ -62,5 +79,44 @@ public class Student extends Person {
      */
     public Programme getProgramme() {
         return programme;
+    }
+
+    /**
+     * Returns the year of which this student in.
+     *
+     * @return the student's current year.
+     */
+    public int getCurrentYear(){
+        return currentYear;
+    }
+
+    /**
+     * Moves this student into the next year of study.
+     *
+     * <p>The only caller is a progression decision of {@link Decision#PROGRESS}:
+     * a repeat decision leaves the year unchanged, and a terminated enrolment
+     * leaves the programme. Grading, repeat and termination rules are in
+     * Handbook 3.3.5 to 3.3.7.
+     *
+     * @throws IllegalStateException when the student is already in the final year
+     *         of their programme
+     */
+    public void advanceYear() {
+        if (programme != null && currentYear >= programme.getDurationYears()) {
+            throw new IllegalStateException(
+                    "already in the final year of " + programme.getProgrammeCode());
+        }
+        currentYear++;
+    }
+
+    private int requireValidYear(int year) {
+        if (year < 1) {
+            throw new IllegalArgumentException("currentYear must be at least 1");
+        }
+        if (programme != null && year > programme.getDurationYears()) {
+            throw new IllegalArgumentException("currentYear " + year + " exceeds the "
+                    + programme.getDurationYears() + "-year programme");
+        }
+        return year;
     }
 }
