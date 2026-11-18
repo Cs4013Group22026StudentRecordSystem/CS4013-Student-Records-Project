@@ -8,15 +8,16 @@ Context and conventions for anyone (human or AI agent) working in this repositor
 course materials and shared design references for this project, not application code.
 All four team members and their agents read the same files from here.
 
-the new design is changed to `.github/agents/design` after align and discussion, some code need to do some refactor.
-
-the folder `.github/agents/deprecated-design` just left for reference when we refactor the code.
+> The agreed design now lives in `.github/agents/design/`. Code is being refactored to match it.
+> `.github/agents/deprecated-design/` is kept for reference only — do not implement against it.
 
 | File | Purpose |
 | --- | --- |
 | `CS4013 Software Development ProjectAY202627.md` / `.pdf` | The assignment specification: required features, deliverables, grading rules, interview rules. |
 | `Handbook of Academic Regulations and Procedures 2026-27 Chapter 2-3.md` / `.pdf` | UL's actual marking/progression regulations (Chapter 2 "Marks and Standards", Chapter 3 "Progression"). This is the source of truth for QCA, progression and award rules. |
-| `UML-diagram.md` | Shared Mermaid class diagram describing the planned model, services, repositories, and their relationships. |
+| `design/student_records_class_diagram.md` | **Design of record.** Shared Mermaid class diagram describing the model, services and their relationships. |
+| `design/Design_creation_plan.md` | Early planning notes. Guidance only — where it disagrees with the diagram above, we will follow the `design/student_records_class_diagram.md` to develop, when we meet some problem then we can discuss and refine it. |
+| `deprecated-design/UML-diagram.md` | Superseded diagram, kept for reference during the refactor. Read-only. |
 
 Each document exists as both `.md` and `.pdf`. **They are the same content** — the
 `.md` is the extracted text and is much cheaper to read; open the `.pdf` only when
@@ -42,12 +43,12 @@ inventing a regulation.
 
 ### UML design reference
 
-Use [`.github/agents/UML-diagram.md`](.github/agents/UML-diagram.md) as the shared
-class-design reference. It describes the intended architecture and may include
-planned or placeholder classes, so it is not proof that a feature is implemented.
-Update it when the agreed design changes, and keep it consistent with the code
-when implementation is completed. Store application code under `src/`, not in
-`.github/agents/`.
+Use [`.github/agents/design/student_records_class_diagram.md`](.github/agents/design/student_records_class_diagram.md)
+as the shared class-design reference. It describes the intended architecture and may
+include planned or placeholder classes, so it is not proof that a feature is
+implemented. Update it when the agreed design changes, and keep it consistent with
+the code when implementation is completed. Store application code under `src/`, not
+in `.github/agents/`.
 
 ## Repository layout
 
