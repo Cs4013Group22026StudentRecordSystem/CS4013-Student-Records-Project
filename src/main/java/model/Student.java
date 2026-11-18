@@ -1,64 +1,58 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Represents a student, their programme, and their module results.
+ * A student registered on a programme.
+ *
+ * <p><strong>Association ownership.</strong> Results are not owned by the
+ * student. The class diagram draws the association in one direction only
+ * ({@code Result "0..*" --> "1" Student}): a result knows which student it
+ * belongs to, while the student keeps no collection of results.
+ *
+ * <p>As a consequence a {@code Student} cannot answer "what are my grades" by
+ * itself. Callers read results from the result repository and hand them to
+ * whichever service needs them (see {@code IResultRepository}). That is
+ * deliberate rather than unfinished: giving each association exactly one owner
+ * means the two classes can never hold divergent copies of the same data, and
+ * it keeps the model free of persistence concerns so the objects stay testable
+ * without a data source.
  */
-public class Student {
-    private String studentId;
-    private String name;
-    private Programme programme;
-    private List<ModuleResult> results = new ArrayList<>();
+public class Student extends Person {
+    private final Programme programme;
 
     /**
-     * Creates a student enrolled in a programme.
+     * Creates a student whose email address is not on record.
      *
      * @param studentId student's identifier
-     * @param name student's name
-     * @param programme student's programme
+     * @param name student's full name
+     * @param programme programme the student is registered on
      */
     public Student(String studentId, String name, Programme programme) {
-        this.studentId = studentId;
-        this.name = name;
+        this(studentId, name, null, programme);
+    }
+
+    /**
+     * Creates a student.
+     *
+     * @param studentId student's identifier
+     * @param name student's full name
+     * @param email student's email address, or {@code null} when not on record
+     * @param programme programme the student is registered on
+     */
+    public Student(String studentId, String name, String email, Programme programme) {
+        super(studentId, name, email);
         this.programme = programme;
-    }
-
-    /**
-     * Adds a module result to this student's results.
-     *
-     * @param result result to add
-     */
-    public void addResult(ModuleResult result) {
-        results.add(result);
-    }
-
-    /**
-     * Returns this student's module results.
-     *
-     * @return the list of module results
-     */
-    public List<ModuleResult> getResults() {
-        return results;
     }
 
     /**
      * Returns this student's identifier.
      *
+     * <p>A student identifier is the same value as {@link #getPersonId()}; this
+     * accessor exists so calling code can use the domain vocabulary.
+     *
      * @return student ID
      */
     public String getStudentId() {
-        return studentId;
-    }
-
-    /**
-     * Returns this student's name.
-     *
-     * @return student name
-     */
-    public String getName() {
-        return name;
+        return getPersonId();
     }
 
     /**
