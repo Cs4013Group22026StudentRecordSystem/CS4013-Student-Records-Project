@@ -12,4 +12,8 @@ public class Transcript {
     public Transcript(){
         results = new ArrayList<Result>();
     }
+    
+    public double getSemesterQCA(){
+        return semesterQCA;
+    }
 }
