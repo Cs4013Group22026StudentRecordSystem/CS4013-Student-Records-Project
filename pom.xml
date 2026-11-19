@@ -12,6 +12,13 @@
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.14.4</junit.version>
+        <!-- Base directory for the generated API docs. The javadoc plugin appends
+             `apidocs` to it, so the HTML lands in docs/apidocs, which is
+             git-ignored: the folder is rebuilt locally and by the Pages workflow
+             (see .github/workflows/pages.yml), never committed.
+             Override without editing this file, e.g.
+             ./mvnw verify -Djavadoc.report.dir=/tmp/site   -> /tmp/site/apidocs -->
+        <javadoc.report.dir>${project.basedir}/docs</javadoc.report.dir>
     </properties>
 
     <dependencies>
@@ -46,6 +53,55 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.6.1</version>
+            </plugin>
+            <!-- docs/index.html is hand-written and tracked, so clean must not wipe
+                 the whole folder: only the generated docs/apidocs tree is removed,
+                 so a rebuild never leaves stale pages behind. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/docs</directory>
+                            <includes>
+                                <include>apidocs/**</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <!-- Generates the API docs during verify, so a broken doc comment fails
+                 the build instead of only showing up at interview time.
+                 Base output directory comes from javadoc.report.dir above; the
+                 plugin writes the HTML into <base>/apidocs. notimestamp keeps the
+                 output byte-identical between runs, which makes a rebuild diff
+                 silent and the Pages artifact stable. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <outputDirectory>${javadoc.report.dir}</outputDirectory>
+                    <notimestamp>true</notimestamp>
+                    <doctitle>Student Records API documentation</doctitle>
+                    <windowtitle>Student Records API</windowtitle>
+                    <!-- Without this the footer shows Maven's default inception
+                         year of 1980, which is visibly wrong on the public site.
+                         Keep these strings ASCII: the plugin writes them to a
+                         temporary options file in the platform encoding, so a
+                         non-ASCII character such as an em dash fails the build. -->
+                    <bottom>Copyright &amp;#169; 2026 CS4013 Group 2</bottom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-apidocs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

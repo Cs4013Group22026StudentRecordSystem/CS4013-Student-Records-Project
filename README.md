@@ -21,6 +21,7 @@ separate `Code/` directory, and all CSV data (including mock/test data) lives in
 │   └── workflows/              # GitHub Actions CI
 ├── CRC/                        # CRC cards (documentation deliverable)
 ├── data/                       # CSV data files, including mock/test data
+├── docs/                       # GitHub Pages site (index.html + generated apidocs/)
 └── src
     ├── main
     │   ├── java
@@ -126,8 +127,29 @@ Requires JDK 17. Maven itself is optional: use the wrapper (`./mvnw`, or
 
 ```bash
 ./mvnw test         # compile and run the unit tests
-./mvnw package      # build the executable JAR (main class: app.Main)
+./mvnw verify       # the above, plus build the JAR — this is what CI runs
 java -jar target/student-records-1.0-SNAPSHOT.jar
 ```
 
 Without the wrapper, the same commands work with a local `mvn`.
+
+### What each command does
+
+Maven's build is a single ordered lifecycle, so a later goal includes everything the
+earlier ones do:
+
+| Command | Compiles | Runs tests | Builds the JAR |
+| --- | --- | --- | --- |
+| `./mvnw test-compile` | main + test | no | no |
+| `./mvnw test` | main + test | yes | no |
+| `./mvnw verify` | main + test | yes | yes |
+
+`test` writes class files to `target/classes` and `target/test-classes`, and test
+reports to `target/surefire-reports/`. Only `verify` and `package` produce
+`target/student-records-1.0-SNAPSHOT.jar` (main class `app.Main`). None of these
+targets generates the Javadoc site or runs static analysis: those are not bound to the
+lifecycle in `pom.xml`, so the project report needs `./mvnw javadoc:javadoc`
+explicitly.
+
+CI runs `./mvnw clean verify`, so a failing test fails the build just like a
+compile error does. Run `./mvnw verify` before pushing.
