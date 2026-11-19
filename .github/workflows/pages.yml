@@ -1,0 +1,63 @@
+name: Publish Javadoc
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# The deploy job needs to mint an OIDC token and write to the Pages site.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deployment finish instead of cancelling it half-way.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the site
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # Javadoc is bound to verify, so this also compiles and runs the tests:
+      # a broken doc comment fails the build before anything is published.
+      # Output is git-ignored locally; docs/apidocs only exists in the runner.
+      - name: Build the site with Maven
+        run: ./mvnw --batch-mode --no-transfer-progress clean verify
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      # Uploads docs/ (the hand-written landing page plus the generated apidocs).
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-26.04
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

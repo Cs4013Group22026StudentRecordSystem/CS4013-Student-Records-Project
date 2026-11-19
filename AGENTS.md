@@ -57,6 +57,10 @@ in `.github/agents/`.
 - All CSV data (including mock/test data) lives in `data/`. There is no `CSV/` directory.
 - `CRC/` holds the CRC cards deliverable.
 - `target/` is build output and is git-ignored.
+- `docs/apidocs/` is the generated Javadoc site, rebuilt by `./mvnw verify` and
+  **git-ignored** — it is produced and published by CI, never committed.
+- `docs/index.html` is the only tracked file under `docs/`: a hand-written landing
+  page that redirects to `docs/apidocs/index.html`.
 
 ## Build and test
 
@@ -65,21 +69,30 @@ with the same pinned Maven version (3.10.0) — a local `mvn` may differ.
 
 ```bash
 ./mvnw test       # compile main and test sources, then run the JUnit tests
-./mvnw verify     # the above, plus build the JAR — this is what CI runs
-./mvnw package    # produces the same JAR as verify, since verify binds no plugin
+./mvnw verify     # the above, plus build the JAR and regenerate the Javadoc
+./mvnw package    # produces the JAR only; no Javadoc, no separate plugin
 ```
 
 The lifecycle means `test` is a subset of `verify`, which is a subset of `install`.
 `test` writes only `target/classes`, `target/test-classes` and
 `target/surefire-reports/`; `verify` additionally produces
-`target/student-records-1.0-SNAPSHOT.jar`. Neither generates the Javadoc site or
-runs any static analysis, because no plugin for those is bound in `pom.xml`.
+`target/student-records-1.0-SNAPSHOT.jar` and the Javadoc site in `docs/apidocs/`.
+Javadoc is bound to `verify`, so a doc comment that names a parameter which does not
+exist (or otherwise breaks `{@link}`/HTML) fails the build; missing comments are
+warnings only. No static analysis plugin is bound. `notimestamp` keeps unchanged pages
+byte-identical, so a rebuild with no source changes produces identical output.
 
-CI ([.github/workflows/maven.yml](.github/workflows/maven.yml)) runs
-`./mvnw --batch-mode --no-transfer-progress clean verify` on every push and on
-pull requests to `main`. Because that runs the tests rather than only compiling
-them, CI fails on a failing assertion as well as on a compile error, so run
-`./mvnw verify` locally before pushing.
+CI uses two workflows, both running
+`./mvnw --batch-mode --no-transfer-progress clean verify`:
+
+- `maven.yml` — every push and every pull request to `main`. Because it runs the tests
+  rather than only compiling, CI fails on a failing assertion as well as on a compile
+  error.
+- `pages.yml` — pushes to `main`; after the build it uploads `docs/` as the Pages
+  artifact and deploys it. Generated docs are never committed, so the published site
+  always matches the branch.
+
+Run `./mvnw verify` locally before pushing.
 
 ## Conventions
 

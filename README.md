@@ -21,6 +21,7 @@ separate `Code/` directory, and all CSV data (including mock/test data) lives in
 │   └── workflows/              # GitHub Actions CI
 ├── CRC/                        # CRC cards (documentation deliverable)
 ├── data/                       # CSV data files, including mock/test data
+├── docs/                       # GitHub Pages site (index.html + generated apidocs/)
 └── src
     ├── main
     │   ├── java
@@ -137,18 +138,19 @@ Without the wrapper, the same commands work with a local `mvn`.
 Maven's build is a single ordered lifecycle, so a later goal includes everything the
 earlier ones do:
 
-| Command | Compiles | Runs tests | Builds the JAR |
-| --- | --- | --- | --- |
-| `./mvnw test-compile` | main + test | no | no |
-| `./mvnw test` | main + test | yes | no |
-| `./mvnw verify` | main + test | yes | yes |
+| Command | Compiles | Runs tests | Builds the JAR | Builds the Javadoc |
+| --- | --- | --- | --- | --- |
+| `./mvnw test-compile` | main + test | no | no | no |
+| `./mvnw test` | main + test | yes | no | no |
+| `./mvnw verify` | main + test | yes | yes | yes |
 
 `test` writes class files to `target/classes` and `target/test-classes`, and test
-reports to `target/surefire-reports/`. Only `verify` and `package` produce
-`target/student-records-1.0-SNAPSHOT.jar` (main class `app.Main`). None of these
-targets generates the Javadoc site or runs static analysis: those are not bound to the
-lifecycle in `pom.xml`, so the project report needs `./mvnw javadoc:javadoc`
-explicitly.
+reports to `target/surefire-reports/`. `verify` also builds
+`target/student-records-1.0-SNAPSHOT.jar` (main class `app.Main`) and the Javadoc site
+in `docs/apidocs/` — open [docs/index.html](docs/index.html) locally. That folder is
+git-ignored: [pages.yml](.github/workflows/pages.yml) rebuilds it and publishes it to
+GitHub Pages on every push to `main`, so no generated HTML is committed. No static
+analysis is bound to the lifecycle.
 
-CI runs `./mvnw clean verify`, so a failing test fails the build just like a
-compile error does. Run `./mvnw verify` before pushing.
+CI runs `./mvnw clean verify`, so a failing test or a malformed doc comment fails the
+build just like a compile error does. Run `./mvnw verify` before pushing.
