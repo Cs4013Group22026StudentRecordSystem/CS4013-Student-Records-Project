@@ -57,6 +57,10 @@ in `.github/agents/`.
 - All CSV data (including mock/test data) lives in `data/`. There is no `CSV/` directory.
 - `CRC/` holds the CRC cards deliverable.
 - `target/` is build output and is git-ignored.
+- `docs/apidocs/` is the generated Javadoc site, rebuilt by `./mvnw verify` and
+  **git-ignored** — it is produced and published by CI, never committed.
+- `docs/index.html` is the only tracked file under `docs/`: a hand-written landing
+  page that redirects to `docs/apidocs/index.html`.
 
 ## Build and test
 

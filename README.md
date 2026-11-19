@@ -21,6 +21,7 @@ separate `Code/` directory, and all CSV data (including mock/test data) lives in
 │   └── workflows/              # GitHub Actions CI
 ├── CRC/                        # CRC cards (documentation deliverable)
 ├── data/                       # CSV data files, including mock/test data
+├── docs/                       # GitHub Pages site (index.html + generated apidocs/)
 └── src
     ├── main
     │   ├── java
