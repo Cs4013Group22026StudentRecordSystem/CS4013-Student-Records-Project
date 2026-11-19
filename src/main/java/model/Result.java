@@ -19,4 +19,29 @@ public class Result {
         this.period = period;
         this.attempt = attempt;
     }
+     
+    public Grade getGrade(){
+        return grade;
+    }
+    
+    public Student getStudent(){
+        return student;
+    }
+    
+    public Module getModule(){
+        return module;
+    }
+    
+    public AcademicPeriod getPeriod(){
+         return period;
+    }
+    
+    public int getAttempt(){
+        return attempt;
+    }
+    
+    public String toString(){
+        return getModule() + " " + getGrade() + " " + getPeriod() + " " + getAttempt();
+    }
+
 }
