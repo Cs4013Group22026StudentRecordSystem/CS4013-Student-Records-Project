@@ -1,5 +1,14 @@
 package model;
-
+/**
+ * 
+ * ProgressionDecision 
+ * stores the full prograssion descision information about one student.
+ * Has a {@link Student} about whom the decision is made
+ * Has Student's QCA
+ * Has a decision from enum {@link Decision}
+ * Has a string reason: for 'REPEAT MODULE' desicion reason is module, this field can bu null
+ * It it a atomic building block for the {@link ExamBoard} class
+ */
 public class ProgressionDecision {
     
     private Student student;
@@ -19,4 +28,8 @@ public class ProgressionDecision {
         this.reason = reason;
     }
     
+    @Override
+    public String toString(){
+        return "Progression decision for "+ student.toString() + "; QCA is" + qca + " " + decision.toString() + reason;
+    }
 }
