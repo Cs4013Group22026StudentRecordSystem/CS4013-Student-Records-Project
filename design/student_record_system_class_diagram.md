@@ -33,13 +33,12 @@ classDiagram
     }
 
     class Student {
-        -Program program
+        -Programme programme
         -String progressionStatus
+        -int currentYear
         -int currentSemester
-        -ArrayList~double~ semesterQCAs
-        -double currentOverallQCA
         +Student(name, studentId)
-        +registerOnProgram(program) void
+        +registerOnProgram(programme) void
         +receiveGrade(grade, module) void
         +calculateSemesterQCA() double
         +calculateOverallQCA() double
@@ -51,33 +50,36 @@ classDiagram
     class Faculty {
         -Module module
         -ArrayList~Student~ students
-        +Faculty(name, personId)
+        +Faculty(name, personId, storable)
+        +getModule() Module
         +chooseAModuleToTeach(module) void
-        +addStudentOnModule() void
-        +removeStudentFromModule() void
         +setResult(student, grade) void
+        +getStudents() ArrayList~Student~
         +generateTranscript() String
     }
 
     class Module {
-        -String code
         -String name
+        -String code
+        -int creditValue
         -Grade grade
-        +Module(code, name)
+        +Module(code, name, creditValue)
         +setGrade(Grade) void
-        +getGradeInQCA() double
+        +getCreditValue() int
         +copy() Module
     }
 
-    class Program {
+    class Programme {
+        -String code
         -String name
-        -ArrayList~Module~ allModules
-        -ArrayList~Module~ currentFiveModules
-        +Program(name)
-        +addModule(module) void
-        +setCurrentFiveModules() void
-        +getCurrentFiveModules() ArrayList~Module~
-        +copy() Program
+        -String level
+        -ArrayList~Module~ modules
+        -Map~String, Integer~ moduleSemesters
+        +Programme(code, name, level)
+        +addModule(module, semester) void
+        +getModules() ArrayList~Module~
+        +getModuleSemester(moduleCode) int
+        +copy() Programme
     }
 
     class Grade {
@@ -92,7 +94,9 @@ classDiagram
         C3
         D1
         F
+        P
         NG
+        N
         -double qvp
         +getQvp() double
     }
@@ -109,14 +113,14 @@ classDiagram
     class CSV_handler {
         +read() void
         +write() void
-        +update() void
+        +update(student, module) void
     }
 
     class Storable {
         <<interface>>
         +read() void
         +write() void
-        +update() void
+        +update(student, module) void
     }
 
     %% Inheritance
@@ -130,33 +134,35 @@ classDiagram
     %% Dependencies
     Main --> Department
     Main ..> UserInterface : uses
-    Faculty ..> Storable : writes results.csv
+    Faculty ..> Storable : writes module result CSV
 
     %% Department holds (aggregation)
     Department "1" o--> Faculty
     Department "1" o--> Student
-    Department "1" o--> Program
+    Department "1" o--> Programme
     Department "1" o--> Module
 
     %% Faculty
     Faculty "1" o--> Module
-    Faculty "1" o--> Student
+    Faculty "0..*" -- "0..*" Student : grades
 
-    %% Container model: Student[Program[Module[Grade]]]
-    Student "1" *--> Program
-    Program "1" *--> Module
-    Module "1" *--> Grade
+    %% Each student owns a programme/module copy with its recorded grades.
+    Student "1" *--> Programme
+    Programme "1" *--> Module
 ```
 
 ## Container model
 
-Each `Student` owns its own copy of a `Program`, which owns its own copies of the `Module` objects, each holding its own `Grade`:
+Each `Student` owns a copy of their `Programme`, which owns copies of its `Module` objects:
 
-`Student[Program[Module1[Grade], Module2[Grade], ...]]`
+`Student[Programme[Module1[Grade?], Module2[Grade?], ...]]`
 
-- `Department` stores the `Program` and `Module` objects as grade-free templates.
-- `Department.register(student, program)` calls `program.copy()`, which calls `copy()` on each module (grades start as `NG`), and gives the copy to the student.
-- `Faculty.setResult(student, grade)` finds the student's own copy of the module (matched by module `code`) and sets the grade there.
+- `CSV_handler` stores the shared programme/module catalogue as templates.
+- `Student.registerOnProgram(programme)` copies the programme, its module-semester mapping, and its modules. A copied module starts with a null grade; an explicit `NG` is a recorded grade.
+- `Faculty.setResult(student, grade)` checks that the student's programme contains the taught module, then records the grade on that student's module copy.
+- The module result CSV stores one current grade per student and module; there is no result ID, attempt history, or result-specific semester.
+- Semester numbers increase across the whole course. `calculateSemesterQCA()` uses `currentSemester` and the copied programme's module-semester mapping; `generateTranscript()` lists recorded grades with their curriculum semesters.
+- Handbook `NG` has 0.00 QPV and is included in QCA; ungraded null grades are excluded. Pass/fail `P` and `N` are non-quality grades.
 
 ## Relationship summary
 
@@ -171,10 +177,9 @@ Each `Student` owns its own copy of a `Program`, which owns its own copies of th
 | Faculty | Dependency (uses) | Storable | – |
 | Department | Aggregation | Faculty | 1 |
 | Department | Aggregation | Student | 1 |
-| Department | Aggregation | Program | 1 |
+| Department | Aggregation | Programme | 1 |
 | Department | Aggregation | Module | 1 |
 | Faculty | Aggregation | Module | 1 |
-| Faculty | Aggregation | Student | 1 |
-| Student | Composition | Program | 1 |
-| Program | Composition | Module | 1 |
-| Module | Composition | Grade | 1 |
+| Faculty | Association | Student | 0..* |
+| Student | Composition | Programme | 1 |
+| Programme | Composition | Module | 1 |
