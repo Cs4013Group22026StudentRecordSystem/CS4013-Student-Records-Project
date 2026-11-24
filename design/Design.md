@@ -5,7 +5,7 @@
 - **Main** (to run the program)
 - **Department** (holds exam boards, calculates QCA...)
 - **Student** (can view the transcript)
-- **Faculty** (can look up transcript and upload results (writes to results.csv))
+- **Faculty** (can look up transcript and upload results to the module's result CSV)
 - **\<\<abstract\>\> Person** (Student and Faculty inherit from Person)
 - **Program**
 - **Module**
@@ -16,7 +16,7 @@
 - **CLI_class**
 - **CSV_handler** (to read, write and update CSV)
 - **CLI interface UserInterface** (CLI_class implements Presentable)
-- **CSV interface Storable** (CSV_handler implements Storable)
+- **CSV interface Storable** (CSV_handler implements Storable for result persistence)
 
 ## Core requirements
 
