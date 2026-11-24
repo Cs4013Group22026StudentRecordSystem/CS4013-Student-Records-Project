@@ -12,14 +12,17 @@ classDiagram
         -ArrayList~Student~ students
         -ArrayList~Faculty~ professors
         -ArrayList~Program~ programs
+        -ArrayList~Module~ modules
         +Department()
         +addStudent(student) void
-        +addFaculty(faculty) void
+        +addFaculty(faculty, module) void
         +addProgram(program) void
+        +addModule(module) void
         +register(student, program) void
         +calculateSemesterQCA(student) void
         +calculateOverallQCA(student) void
-        +identifyProgressionStuatus(student) void
+        +identifyProgressionStatus(student) void
+        +progress(student)
     }
 
     class Person {
@@ -90,6 +93,22 @@ classDiagram
         NG
         -double qvp
         +getQvp() double
+    }
+
+    class CLI_class {
+
+    }
+
+    interface UserInterface {
+
+    }
+
+    class CSV_handler {
+
+    }
+
+    interface Storable {
+
     }
 
     %% Inheritance
