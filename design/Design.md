@@ -7,7 +7,7 @@
 - **Student** (can view the transcript)
 - **Faculty** (can look up transcript and upload results to the module's result CSV)
 - **\<\<abstract\>\> Person** (Student and Faculty inherit from Person)
-- **Program**
+- **Programme**
 - **Module**
 - **\<\<enumeration\>\> Grade**
 
@@ -51,7 +51,7 @@
 | --- | --- |
 | R1: Add student(s) | Department |
 | R2: Add program | Department |
-| R3: Add module | Program (to this program), Department (just add standalone module) |
+| R3: Add module | Programme (to this program), Department (just add standalone module) |
 | R4: Register student on program | Student (contains implementation), Department (invokes method) |
 | R5: Record module results | Faculty (invokes method and passes grade {A1, A2, B1, B2, B3 ...} as parameter), Student (has method implementation) |
 | R6: Calculate semester QCA | Student (has implementation), Department (invokes the method) |
