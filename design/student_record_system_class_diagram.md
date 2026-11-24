@@ -72,10 +72,9 @@ classDiagram
     class Programme {
         -String code
         -String name
-        -String level
         -ArrayList~Module~ modules
         -Map~String, Integer~ moduleSemesters
-        +Programme(code, name, level)
+        +Programme(code, name)
         +addModule(module, semester) void
         +getModules() ArrayList~Module~
         +getModuleSemester(moduleCode) int
