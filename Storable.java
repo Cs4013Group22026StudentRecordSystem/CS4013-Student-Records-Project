@@ -1,7 +1,7 @@
 import java.io.IOException;
 
 /**
- * Defines CSV-backed persistence operations.
+ * Defines persistence operations for application data and module grades.
  */
 public interface Storable {
     /** Loads persisted application data. */
@@ -10,6 +10,6 @@ public interface Storable {
     /** Writes the current application data. */
     void write() throws IOException;
 
-    /** Persists the results for the module whose student result changed. */
+    /** Persists the student's current grade for the specified module. */
     void update(Student student, Module module) throws IOException;
 }
