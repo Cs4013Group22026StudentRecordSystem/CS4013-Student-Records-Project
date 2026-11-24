@@ -5,22 +5,16 @@ import java.util.Map;
 public class Programme {
     private String code;
     private String name;
-    private String level;
     private ArrayList<Module> modules;
     private Map<String, Integer> moduleSemesters;
 
     public Programme(String name) {
-        this(name, name, "UNSPECIFIED");
+        this(name, name);
     }
 
     public Programme(String code, String name) {
-        this(code, name, "UNSPECIFIED");
-    }
-
-    public Programme(String code, String name, String level) {
         this.code = code;
         this.name = name;
-        this.level = level;
         this.modules = new ArrayList<>(5);
         this.moduleSemesters = new LinkedHashMap<>();
     }
@@ -54,10 +48,6 @@ public class Programme {
         return name;
     }
 
-    public String getLevel() {
-        return level;
-    }
-
     public ArrayList<Module> getModules() {
         return new ArrayList<>(modules);
     }
@@ -72,7 +62,7 @@ public class Programme {
     }
 
     public Programme copy() {
-        Programme copy = new Programme(code, name, level);
+        Programme copy = new Programme(code, name);
         for (Module module : modules) {
             copy.addModule(module.copy(), getModuleSemester(module.getCode()));
         }
