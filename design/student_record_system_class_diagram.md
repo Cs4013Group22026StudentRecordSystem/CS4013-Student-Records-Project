@@ -61,11 +61,9 @@ classDiagram
     class Module {
         -String name
         -String code
-        -int creditValue
         -Grade grade
-        +Module(code, name, creditValue)
+        +Module(code, name)
         +setGrade(Grade) void
-        +getCreditValue() int
         +copy() Module
     }
 

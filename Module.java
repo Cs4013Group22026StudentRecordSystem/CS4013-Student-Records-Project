@@ -2,16 +2,10 @@ public class Module {
     private Grade grade;
     private String name;
     private String code;
-    private int creditValue;
 
     public Module(String code, String name) {
-        this(code, name, 5);
-    }
-
-    public Module(String code, String name, int creditValue) {
         this.code = code;
         this.name = name;
-        this.creditValue = creditValue;
     }
 
     public String getCode() {
@@ -20,10 +14,6 @@ public class Module {
 
     public String getName() {
         return name;
-    }
-
-    public int getCreditValue() {
-        return creditValue;
     }
 
     public Grade getGrade() {
@@ -38,6 +28,6 @@ public class Module {
     }
 
     public Module copy() {
-        return new Module(code, name, creditValue);
+        return new Module(code, name);
     }
 }
