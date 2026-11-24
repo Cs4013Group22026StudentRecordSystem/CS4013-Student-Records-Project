@@ -5,7 +5,7 @@ classDiagram
     direction TB
 
     class Main {
-        +run(CLI_class) void
+        +run(UserInterface) void
     }
 
     class Department {
@@ -22,7 +22,7 @@ classDiagram
         +calculateSemesterQCA(student) void
         +calculateOverallQCA(student) void
         +identifyProgressionStatus(student) void
-        +progress(student)
+        +progress(student) void
     }
 
     class Person {
@@ -66,6 +66,7 @@ classDiagram
         +Module(code, name)
         +setGrade(Grade) void
         +getGradeInQCA() double
+        +copy() Module
     }
 
     class Program {
@@ -76,6 +77,7 @@ classDiagram
         +addModule(module) void
         +setCurrentFiveModules() void
         +getCurrentFiveModules() ArrayList~Module~
+        +copy() Program
     }
 
     class Grade {
@@ -96,35 +98,65 @@ classDiagram
     }
 
     class CLI_class {
-
+        +PlaceHolder() void
     }
 
-    interface UserInterface {
-
+    class UserInterface {
+        <<interface>>
+        +PlaceHolder() void
     }
 
     class CSV_handler {
-
+        +read() void
+        +write() void
+        +update() void
     }
 
-    interface Storable {
-
+    class Storable {
+        <<interface>>
+        +read() void
+        +write() void
+        +update() void
     }
 
     %% Inheritance
     Person <|-- Student : extends
     Person <|-- Faculty : extends
 
-    %% Associations / aggregations / composition
+    %% Interface implementation
+    UserInterface <|.. CLI_class : implements
+    Storable <|.. CSV_handler : implements
+
+    %% Dependencies
     Main --> Department
+    Main ..> UserInterface : uses
+    Faculty ..> Storable : writes results.csv
+
+    %% Department holds (aggregation)
     Department "1" o--> Faculty
     Department "1" o--> Student
+    Department "1" o--> Program
+    Department "1" o--> Module
+
+    %% Faculty
     Faculty "1" o--> Module
     Faculty "1" o--> Student
-    Student "1" o--> Program
-    Program "1" o--> Module
+
+    %% Container model: Student[Program[Module[Grade]]]
+    Student "1" *--> Program
+    Program "1" *--> Module
     Module "1" *--> Grade
 ```
+
+## Container model
+
+Each `Student` owns its own copy of a `Program`, which owns its own copies of the `Module` objects, each holding its own `Grade`:
+
+`Student[Program[Module1[Grade], Module2[Grade], ...]]`
+
+- `Department` stores the `Program` and `Module` objects as grade-free templates.
+- `Department.register(student, program)` calls `program.copy()`, which calls `copy()` on each module (grades start as `NG`), and gives the copy to the student.
+- `Faculty.setResult(student, grade)` finds the student's own copy of the module (matched by module `code`) and sets the grade there.
 
 ## Relationship summary
 
@@ -132,11 +164,17 @@ classDiagram
 |---|---|---|---|
 | Student | Inheritance (extends) | Person | – |
 | Faculty | Inheritance (extends) | Person | – |
+| CLI_class | Realization (implements) | UserInterface | – |
+| CSV_handler | Realization (implements) | Storable | – |
 | Main | Association (uses) | Department | – |
+| Main | Dependency (uses) | CLI_class | – |
+| Faculty | Dependency (uses) | Storable | – |
 | Department | Aggregation | Faculty | 1 |
 | Department | Aggregation | Student | 1 |
+| Department | Aggregation | Program | 1 |
+| Department | Aggregation | Module | 1 |
 | Faculty | Aggregation | Module | 1 |
 | Faculty | Aggregation | Student | 1 |
-| Student | Aggregation | Program | 1 |
-| Program | Aggregation | Module | 1 |
+| Student | Composition | Program | 1 |
+| Program | Composition | Module | 1 |
 | Module | Composition | Grade | 1 |
