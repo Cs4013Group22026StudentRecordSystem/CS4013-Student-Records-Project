@@ -1,34 +1,43 @@
-public class Module{
-    private String result;
+public class Module {
+    private Grade grade;
     private String name;
     private String code;
-    //PRIVATE DOUBL3 QVP
-    public Module(String code, String name, String result){
+    private int creditValue;
+
+    public Module(String code, String name) {
+        this(code, name, 5);
+    }
+
+    public Module(String code, String name, int creditValue) {
         this.code = code;
         this.name = name;
+        this.creditValue = creditValue;
     }
-    
-    public void setResult(Grade grade){
-        
-        boolean valid = false;
- 
-        while(!valid){
-            try{
-                grade = Grade.valueOf(result.toUpperCase());
-                this.result = result;
-                valid = true;
-            }
-            catch(IllegalArgumentException e){
-                System.out.println("Invalid input for result.");
-            }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getCreditValue() {
+        return creditValue;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        if (grade == null) {
+            throw new IllegalArgumentException("Grade cannot be null.");
         }
-        //grade.getQCA()
-    }   
-    
-    //calculate QVP/ assign
-    
-    //public DOUBE getgrADE()
-    //CASE 
-    //DOUBLE PVQ;
-    
+        this.grade = grade;
+    }
+
+    public Module copy() {
+        return new Module(code, name, creditValue);
+    }
 }
