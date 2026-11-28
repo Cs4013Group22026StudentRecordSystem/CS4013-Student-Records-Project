@@ -1,0 +1,128 @@
+import java.util.Scanner;
+import java.io.IOException;
+
+public class CLI_Handler implements UserInterface{
+    private Scanner scan;
+
+    /**
+     * Constructor 
+     * Initialises the scanner
+     */
+    public CLI_Handler() {
+        scan = new Scanner(System.in);
+    }
+
+    /**
+     * Runs student transcript system
+     * @param department the department obj
+     */
+    @Override
+    public void run(Department department) throws IOException 
+    {
+        boolean more = true;
+        while(more) 
+            {
+                System.out.println("S)tudent F)aculty D)epartment Q)uit");
+                String command = scan.nextLine().toUpperCase();
+
+                if(command.equals("S")) 
+                {
+                    Student student = chooseStudent(department);
+                    if (student != null) {
+                        System.out.println(student.generateTranscript());
+                    }
+                }
+                else if(command.equals("F")) 
+                {
+                    System.out.println("Enter facultyID:");
+                    String facultyId = scan.nextLine();
+                    Faculty faculty = department.getFacultyById(facultyId); //need to add this in same way as student
+                    if (faculty != null) {
+                        System.out.println(faculty.generateTranscript());
+                    } else {
+                        System.out.println("FacultyID not found.");
+                        continue;
+                    }
+                    Module module = faculty.getModule();
+                    if (module == null) {
+                        System.out.println("Module not found.");
+                        continue;
+                    }
+                    System.out.println("Module:" + module.getCode());
+                    System.out.println("Enter student ID to grade:");
+                    String studentId = scan.nextLine();
+                    Student student = department.getStudentById(studentId);
+
+                    if (student != null) {
+                        System.out.println("Enter grade:");
+                        String gradeString = scan.nextLine().toUpperCase();
+                        Grade grade = null;
+                        for (Grade i : Grade.values()){                       
+                            if (i.toString().equals(gradeString)) {
+                                grade = i;
+                                break;
+                            }
+                        }
+
+                        if (grade == null) {
+                            System.out.println("Input grade error");
+                            continue;
+                        }
+                        faculty.setResult(student, grade);
+                    }
+                }
+                else if(command.equals("D")) 
+                {
+                    boolean more2 = true;
+
+                    while (more2) {
+                        System.out.println("Add S)tudent or Add P)rogramme or Q)uit");
+                        String Command2 = scan.nextLine().toUpperCase();
+
+                        if (Command2.equals("S")) {
+                            System.out.println("Enter student name:");
+                            String name = scan.nextLine();
+                            System.out.println("Enter student ID:");
+                            String studentId = scan.nextLine();
+                            Student studentAdd = new Student(name, studentId);
+                            department.addStudent(studentAdd);
+                        } else if (Command2.equals("P")) {
+                            System.out.println("Enter programme code:");
+                            String progCode = scan.nextLine();
+                            System.out.println("Enter programme name:");
+                            String progName = scan.nextLine();
+                            Programme programmeAdd = new Programme(progCode, progName);
+                            department.addProgramme(programmeAdd);
+                        } else if (Command2.equals("Q")) {
+                            more2 = false;
+                        } else {
+                            System.out.println("Invalid input. Try again");
+                        }
+                    }
+                }
+                else if(command.equals("Q")) 
+                {
+                    more = false;
+                }
+                else 
+                {
+                    System.out.println("Invalid input. Try again.");
+                }
+            }
+    }
+
+    /**
+     * Asks user to input studentid
+     * then calls department method to search through each student's id in the arraylist and return the one it equals
+     * @param department the department obj
+    */
+    private Student chooseStudent(Department department) {
+        System.out.println("Enter student ID:");
+        String studentId = scan.nextLine();
+        Student student = department.getStudentById(studentId);  //this method isn't current in
+        if (student == null) {
+            System.out.println("Student not found.");
+        }
+        return student;
+    }
+}
