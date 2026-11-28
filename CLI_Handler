@@ -49,11 +49,10 @@ public class CLI_Handler implements UserInterface{
                         continue;
                     }
                     System.out.println("Module:" + module.getCode());
-                    System.out.println("Enter student ID to grade:");
-                    String studentId = scan.nextLine();
-                    Student student = department.getStudentById(studentId);
+                    
+                    Student chosenStudent = chooseStudent(department);
 
-                    if (student != null) {
+                    if (chosenStudent != null) {
                         System.out.println("Enter grade:");
                         String gradeString = scan.nextLine().toUpperCase();
                         Grade grade = null;
@@ -68,7 +67,7 @@ public class CLI_Handler implements UserInterface{
                             System.out.println("Input grade error");
                             continue;
                         }
-                        faculty.setResult(student, grade);
+                        faculty.setResult(chosenStudent, grade);
                     }
                 }
                 else if(command.equals("D")) 
