@@ -1,0 +1,5 @@
+import java.util.IOException;
+
+public interface UserInterface throws IOException {
+    void run(Department department);
+}
